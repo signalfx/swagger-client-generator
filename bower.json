@@ -1,6 +1,6 @@
 {
   "name": "swagger-js-api-generator",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Automatically generate an api object from a given swagger schema",
   "keywords": [
     "swagger",
