@@ -27,9 +27,10 @@
     "example",
     "src",
     "build",
+    "dev",
+    "index.js",
     "package.json",
-    "gulpfile.js",
-    "package.json"
+    "gulpfile.js"
   ],
   "repository": {
     "type": "git",
