@@ -1,14 +1,12 @@
 {
-  "name": "client-side-seed",
-  "private": true,
+  "name": "swagger-js-api-generator",
   "version": "0.0.1",
   "description": "",
   "keywords": [],
   "main": [
-    "dist/client-side-seed.css",
-    "dist/client-side-seed.js"
+    "dist/swagger-js-api-generator.js"
   ],
-  "homepage": "https://github.com/oztu/client-side-seed",
+  "homepage": "https://github.com/oztu/swagger-js-api-generator",
   "authors": [
     "Ozan Turgut <ozanturgut@gmail.com>"
   ],
@@ -31,7 +29,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git@github.com:oztu/client-side-seed.git"
+    "url": "git@github.com:oztu/swagger-js-api-generator.git"
   },
   "dependencies": {}
 }
