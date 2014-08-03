@@ -1,17 +1,15 @@
 {
-  "name": "seed",
-  "version": "0.0.0",
-  "private": true,
+  "name": "swagger-js-api-generator",
+  "version": "0.0.1",
   "description": "",
   "keywords": [],
-  "main": "./src/js/seed.js",
+  "main": "./index.js",
   "devDependencies": {
     "gulp": "^3.8.5",
     "boilerplate-gulp": "^0.1.0"
   },
   "directories": {
-    "jsSrc": "./src/js",
-    "cssSrc": "./src/css",
+    "jsSrc": "./src/client",
     "build": "./build",
     "dist": "./dist",
     "reports": "./reports",
@@ -19,7 +17,7 @@
     "example": "./example"
   },
   "scripts": {
-    "test": "exit 1"
+    "test": "./node_modules/.bin/gulp test"
   },
   "author": {
     "name": "Ozan Turgut",
@@ -29,15 +27,15 @@
   "licenses": [
     {
       "type": "Apache License 2.0",
-      "url": "https://github.com/seed/blob/master/LICENSE-APACHE2"
+      "url": "https://github.com/oztu/swagger-js-api-generator/blob/master/LICENSE-APACHE2"
     }
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/seed.git"
+    "url": "git://github.com/oztu/swagger-js-api-generator.git"
   },
   "bugs": {
-    "url": "https://github.com/seed/issues"
+    "url": "https://github.com/oztu/swagger-js-api-generator/issues"
   },
-  "homepage": "https://github.com/seed"
+  "homepage": "https://github.com/oztu/swagger-js-api-generator"
 }

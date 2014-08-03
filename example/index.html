@@ -2,11 +2,33 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title></title>
-  <link type="text/css" rel="stylesheet" href="seed.css" />
-  <script src="seed.js"></script>
+  <title>Swagger JS API Example</title>
 </head>
 <body>
-	Hello,  world!!
+	Example: <span id="example"></span>
+
+  <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+  <script src="swagger-js-api-generator.js"></script>
+  <script>
+    function operationHandler(operation){
+      var endpoint = operation.apiObject.apiDeclaration.basePath + operation.apiObject.path;
+      return function(data, callback){
+        var url = endpoint;
+
+        if(operation.nickname === 'getPetById')
+          url = url.replace('{petId}', data);
+
+        $.ajax(url, { type: this.method }).complete(callback);
+      };
+    }
+
+    $.getJSON('./schema.json', function(schema){
+      var api = swaggerJsApiGenerator(schema, operationHandler);
+
+      api.pet.getPetById(0, function(response){
+        console.log('response', response.responseJSON);
+      });
+    });
+  </script>
 </body>
 </html>
