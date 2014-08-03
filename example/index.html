@@ -8,7 +8,7 @@
 	Example: <span id="example"></span>
 
   <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-  <script src="swagger-js-api-generator.js"></script>
+  <script src="swagger-js-client-generator.js"></script>
   <script>
     function operationHandler(operation){
       var endpoint = operation.apiObject.apiDeclaration.basePath + operation.apiObject.path;
@@ -23,7 +23,7 @@
     }
 
     $.getJSON('./schema.json', function(schema){
-      var api = swaggerJsApiGenerator(schema, operationHandler);
+      var api = swaggerJsClientGenerator(schema, operationHandler);
 
       api.pet.getPetById(0, function(response){
         console.log('response', response.responseJSON);

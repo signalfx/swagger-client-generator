@@ -1,5 +1,5 @@
 {
-  "name": "swagger-js-api-generator",
+  "name": "swagger-js-client-generator",
   "version": "0.0.1",
   "description": "",
   "keywords": [],
@@ -27,15 +27,15 @@
   "licenses": [
     {
       "type": "Apache License 2.0",
-      "url": "https://github.com/oztu/swagger-js-api-generator/blob/master/LICENSE-APACHE2"
+      "url": "https://github.com/oztu/swagger-js-client-generator/blob/master/LICENSE-APACHE2"
     }
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/oztu/swagger-js-api-generator.git"
+    "url": "git://github.com/oztu/swagger-js-client-generator.git"
   },
   "bugs": {
-    "url": "https://github.com/oztu/swagger-js-api-generator/issues"
+    "url": "https://github.com/oztu/swagger-js-client-generator/issues"
   },
-  "homepage": "https://github.com/oztu/swagger-js-api-generator"
+  "homepage": "https://github.com/oztu/swagger-js-client-generator"
 }
