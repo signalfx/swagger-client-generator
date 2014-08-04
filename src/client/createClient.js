@@ -1,24 +1,29 @@
 'use strict';
 
-module.exports = function generateApi(schema, operationHandler){
+var createOperationHandler = require('./createOperationHandler');
+
+function createClient(schema, requestHandler){
   var operations = processSchema(schema),
     api = {};
 
   function getApi(apiObject){
     var name = getApiName(apiObject);
 
-    if(name in api) return api[name];
-    return api[name] = {};
+    if(!(name in api)) api[name] = {};
+    return api[name];
   }
 
   operations.forEach(function(operation){
     var api = getApi(operation.apiObject);
 
-    api[operation.nickname] = operationHandler(operation);
+    api[operation.nickname] = createOperationHandler(operation, requestHandler);
   });
 
   return api;
-};
+}
+
+module.exports = createClient;
+createClient.createOperationHandler = createOperationHandler;
 
 // Helpper method which assings back pointer to object parents and returns
 // the api objects within the given schema.
@@ -34,6 +39,11 @@ function processSchema(schema){
 
       apiObject.operations.forEach(function(operation){
         operation.apiObject = apiObject;
+
+        operation.parameters.forEach(function(parameter){
+          parameter.operation = operation;
+        });
+
         operations.push(operation);
       });
     });
@@ -42,17 +52,17 @@ function processSchema(schema){
   return operations;
 }
 
-
 // Takes a path and returns a JavaScript-friendly variable name
 function getApiName(apiObject){
   var path = apiObject.apiDeclaration.resourcePath || apiObject.path;
 
   // String non-word characters
-  return path.replace(/\W/g, '');
+  path = path.replace(/\W/g, '');
 
   // Turn paths which look/like/this to lookLikeThis
   path = path.replace(/(\w)\/(\w)/g, function(match, p1, p2){
     return p1 + p2.toUpperCase();
   });
 
+  return path;
 }

@@ -10,22 +10,14 @@
   <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
   <script src="swagger-js-client-generator.js"></script>
   <script>
-    function operationHandler(operation){
-      var endpoint = operation.apiObject.apiDeclaration.basePath + operation.apiObject.path;
-      return function(data, callback){
-        var url = endpoint;
-
-        if(operation.nickname === 'getPetById')
-          url = url.replace('{petId}', data);
-
-        $.ajax(url, { type: this.method }).complete(callback);
-      };
+    function requestHandler(request){
+      $.ajax(request.url, { type: request.method }).complete(request.options);
     }
 
     $.getJSON('./schema.json', function(schema){
-      var api = swaggerJsClientGenerator(schema, operationHandler);
+      var api = swaggerJsClientGenerator(schema, requestHandler);
 
-      api.pet.getPetById(0, function(response){
+      api.pet.getPetById(2, function(response){
         console.log('response', response.responseJSON);
       });
     });
