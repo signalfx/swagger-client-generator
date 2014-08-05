@@ -1,4 +1,4 @@
-# Swagger JS Client Generator
+# Swagger Client Generator
 
 This tool allows you to automatically generate an api object from a given
 swagger schema. Since this tool doesn't define how resource should be fetched,
@@ -22,7 +22,7 @@ with the API server as swagger-js does.
 ## Example
 ```js
 // in nodejs
-var schema = require('swagger-js-client-generator');
+var schema = require('swagger-client-generator');
 schema.save('http://api.app.com/api-docs', 'my-schema.json');
 ```
 
@@ -30,7 +30,7 @@ schema.save('http://api.app.com/api-docs', 'my-schema.json');
 // in a browser
 
 // Assuming you've loaded my-schema as mySchema
-var api = swaggerJsClientGenerator(mySchema, function(operation){
+var api = swaggerClientGenerator(mySchema, function(operation){
   return function(data){
     console.log(operation.nickname, 'called with', data);
   }
@@ -42,7 +42,7 @@ api.user.create('kanye');
 
 ## Browser API
 
-### `var api = swaggerJsClientGenerator(schemaObject, operationHandler)`
+### `var api = swaggerClientGenerator(schemaObject, operationHandler)`
 
 #### schemaObject (an object)
 An object created by the swagger-schema nodejs library. It's basically a 

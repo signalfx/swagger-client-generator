@@ -1,6 +1,6 @@
 {
-  "name": "swagger-js-client-generator",
-  "version": "0.0.1",
+  "name": "swagger-client-generator",
+  "version": "0.1.0",
   "description": "",
   "keywords": [],
   "main": "./index.js",
@@ -16,26 +16,29 @@
     "dev": "./dev",
     "example": "./example"
   },
-  "scripts": {
-    "test": "./node_modules/.bin/gulp test"
-  },
   "author": {
     "name": "Ozan Turgut",
     "email": "ozanturgut@gmail.com",
     "url": "http://ozan.io"
   },
+  "scripts": {
+    "prepublish": "node ./node_modules/gulp/bin/gulp.js",
+    "test": "node ./node_modules/gulp/bin/gulp.js test",
+    "dev": "node ./node_modules/gulp/bin/gulp.js dev",
+    "dist": "node ./node_modules/gulp/bin/gulp.js" 
+  },
   "licenses": [
     {
       "type": "Apache License 2.0",
-      "url": "https://github.com/oztu/swagger-js-client-generator/blob/master/LICENSE-APACHE2"
+      "url": "https://github.com/signalfuse/swagger-client-generator/blob/master/LICENSE-APACHE2"
     }
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/oztu/swagger-js-client-generator.git"
+    "url": "git://github.com/signalfuse/swagger-client-generator.git"
   },
   "bugs": {
-    "url": "https://github.com/oztu/swagger-js-client-generator/issues"
+    "url": "https://github.com/signalfuse/swagger-client-generator/issues"
   },
-  "homepage": "https://github.com/oztu/swagger-js-client-generator"
+  "homepage": "https://github.com/signalfuse/swagger-client-generator"
 }

@@ -1,6 +1,6 @@
 {
-  "name": "swagger-js-client-generator",
-  "version": "0.0.4",
+  "name": "swagger-client-generator",
+  "version": "0.1.0",
   "description": "Automatically generate an api object from a given swagger schema",
   "keywords": [
     "swagger",
@@ -8,9 +8,9 @@
     "generator"
   ],
   "main": [
-    "dist/swagger-js-client-generator.js"
+    "dist/swagger-client-generator.js"
   ],
-  "homepage": "https://github.com/oztu/swagger-js-client-generator",
+  "homepage": "https://github.com/signalfuse/swagger-client-generator",
   "authors": [
     "Ozan Turgut <ozanturgut@gmail.com>"
   ],
@@ -34,7 +34,9 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git@github.com:oztu/swagger-js-client-generator.git"
+    "url": "git@github.com:signalfuse/swagger-client-generator.git"
   },
-  "dependencies": {}
+  "dependencies": {
+    "swagger-validate": "~0.1.1"
+  }
 }

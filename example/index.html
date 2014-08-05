@@ -8,14 +8,14 @@
 	Example: <span id="example"></span>
 
   <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-  <script src="swagger-js-client-generator.js"></script>
+  <script src="swagger-client-generator.js"></script>
   <script>
     function requestHandler(request){
       $.ajax(request.url, { type: request.method }).complete(request.options);
     }
 
     $.getJSON('./schema.json', function(schema){
-      var api = swaggerJsClientGenerator(schema, requestHandler);
+      var api = swaggerClientGenerator(schema, requestHandler);
 
       api.pet.getPetById(2, function(response){
         console.log('response', response.responseJSON);

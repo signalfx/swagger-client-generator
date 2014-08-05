@@ -1,10 +1,9 @@
 'use strict';
 
-var SwaggerUtils = require('./SwaggerUtils'),
-  OperationUtils = require('./OperationUtils'),
-  getRequestHeaders = require('./getRequestHeaders'),
+var getRequestHeaders = require('./getRequestHeaders'),
   getRequestUrl = require('./getRequestUrl'),
-  getRequestBody = require('./getRequestBody');
+  getRequestBody = require('./getRequestBody'),
+  swaggerValidate = require('../../bower_components/swagger-validate/dist/swagger-validate');
 
 function createOperationHandler(operation, requestHandler){
   return function(data, options){
@@ -12,7 +11,8 @@ function createOperationHandler(operation, requestHandler){
 
     data = singleParamConvenienceProcessor(operation, data);
 
-    OperationUtils.validate(operation, data, options);
+    var error = swaggerValidate.operation(data, operation, operation.apiObject.apiDeclaration.models);
+    if(error) throw error;
 
     data = removeUnknownParams(operation, data);
     
@@ -52,7 +52,7 @@ function singleParamConvenienceProcessor(operation, data){
 
   // If the data passed is is not valid for the param data type, bail
   try {
-    SwaggerUtils.validateDataType(data, param, models); 
+    swaggerValidate.dataType(data, param, models); 
     var wrapper = {};
     wrapper[param.name] = data;
     return wrapper;
