@@ -3,7 +3,7 @@
 var getRequestHeaders = require('./getRequestHeaders'),
   getRequestUrl = require('./getRequestUrl'),
   getRequestBody = require('./getRequestBody'),
-  swaggerValidate = require('../../bower_components/swagger-validate/dist/swagger-validate');
+  swaggerValidate = require('../bower_components/swagger-validate/dist/swagger-validate');
 
 function createOperationHandler(operation, requestHandler){
   return function(data, options){

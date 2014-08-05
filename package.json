@@ -9,7 +9,7 @@
     "boilerplate-gulp": "^0.1.0"
   },
   "directories": {
-    "jsSrc": "./src/client",
+    "jsSrc": "./src",
     "build": "./build",
     "dist": "./dist",
     "reports": "./reports",
