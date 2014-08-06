@@ -1,11 +1,11 @@
 'use strict';
 
-module.exports = function getRequestBody(operation, data, options){
+module.exports = function getRequestBody(operation, data, headers){
   var body = data.body;
 
-  if(!(options.headers &&  options.headers['Content-Type'])) return body;
+  if(!(headers &&  headers['Content-Type'])) return body;
 
-  var contentType = options.headers['Content-Type'];
+  var contentType = headers['Content-Type'];
   var presentFormParams = operation.parameters.filter(function(param){
     return param.paramType === 'form' && data[param.name] !== undefined;
   });
@@ -34,10 +34,14 @@ module.exports = function getRequestBody(operation, data, options){
 
     body += '--' + boundary + '--\n';
     
-    options.headers['Content-Type'] = contentType.replace(
+    headers['Content-Type'] = contentType.replace(
       'multipart/form-data', 
       'multipart/form-data; boundary=' + boundary
     );
+  } else if(contentType.indexOf('application/json') !== -1){
+    if(typeof body !== 'string'){
+      body = JSON.stringify(body);
+    }
   }
 
   return body;

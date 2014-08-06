@@ -1,6 +1,5 @@
 'use strict';
 
-describe('generate api from schema object', function(){
-  it('doesn\'t have tests yet', function(){
-  });
+describe('create client', function(){
+  it('', function(){});
 });

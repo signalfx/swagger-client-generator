@@ -1,10 +1,13 @@
 'use strict';
 
-var MissingPathParamsError = require('./ErrorTypes').MissingPathParamsErrorget;
+var MissingPathParamsError = require('./errorTypes').MissingPathParamsErrorget;
 
 module.exports = function getRequestUrl(operation, data){
   var url = getUrlTemplate(operation);
+
   url = applyPathParams(url, operation, data);
+
+  if(!data) return url;
 
   var queryParams = operation.parameters.filter(function(param){
     return param.paramType === 'query' && data[param.name] !== undefined;
@@ -47,7 +50,6 @@ function applyPathParams(url, operation, data){
 
   return url;
 }
-
 
 function getUrlTemplate(operation){
   var apiObject = operation.apiObject; 

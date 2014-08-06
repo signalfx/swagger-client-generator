@@ -7,12 +7,12 @@ var getRequestHeaders = require('./getRequestHeaders'),
 
 function createOperationHandler(operation, requestHandler){
   return function(data, options){
-    options = options || {};
-
     var error,
       url,
       headers,
       body;
+
+    options = options || {};
 
     try{
       data = singleParamConvenienceProcessor(operation, data);
@@ -24,13 +24,13 @@ function createOperationHandler(operation, requestHandler){
 
         url = getRequestUrl(operation, data);
         headers = getRequestHeaders(operation, data, options);
-        body = getRequestBody(operation, data, options);
+        body = getRequestBody(operation, data, headers);
       }
     } catch(e){
       error = e;
     }
     
-    requestHandler(error, {
+    return requestHandler(error, {
       operation: operation,
       data: data,
       options: options,
@@ -54,6 +54,8 @@ createOperationHandler.logger = {
 
 // Enables data to be passed directly for single param operations.
 function singleParamConvenienceProcessor(operation, data){
+  if(!data) return data;
+
   // If there are more than one params, bail
   if(operation.parameters.length !== 1) return data;
 
