@@ -16,48 +16,53 @@ Object.keys(errorTypes).forEach(function(errorName){
 });
 
 function createOperationHandler(operation, requestHandler){
+  function Request(data, options){
+    this.method = operation.method;
+    this.operation = operation;
+    this.errorTypes = allErrorTypes;
+    this.data = data;
+    this.options = options;
+  }
+
   var operationHandler = function(data, options){
     var error,
-      url,
-      headers,
-      body;
-
+      request;
+    
     options = options || {};
 
     try{
       data = singleParamConvenienceProcessor(operation, data);
+      data = removeUnknownParams(operation, data);
 
       error = swaggerValidate.operation(data, operation, operation.apiObject.apiDeclaration.models);
       
+      request = new Request(data, options);
+      
+      // If we know there is an error, don't attempt to craft the request params.
+      // The request param generators assume valid data to work properly.
       if(!error){
-        data = removeUnknownParams(operation, data);
-
-        url = getRequestUrl(operation, data);
-        headers = getRequestHeaders(operation, data, options);
-        body = getRequestBody(operation, data, headers);
+        request.url = getRequestUrl(operation, data);
+        request.headers = getRequestHeaders(operation, data, options);
+        request.body = getRequestBody(operation, data, request.headers);
       }
     } catch(e){
       error = e;
     }
     
-    return requestHandler(error, {
-      operation: operation,
-      data: data,
-      options: options,
-      errorTypes: allErrorTypes,
-
-      method: operation.method,
-      url: url,
-      headers: headers,
-      body: body
-    });
+    return requestHandler(error, request);
   };
 
+  // Useful for instanceof checks
+  operationHandler.Request = Request;
+  operationHandler.errorTypes = allErrorTypes;
+
+  // Useful for reflection
   operationHandler.operation = operation;
+  
+  // Can be used to preemptively validate without action
   operationHandler.validate = function(data){
     return swaggerValidate.operation(data, operation, operation.apiObject.apiDeclaration.models);
   };
-  operationHandler.errorTypes = allErrorTypes;
 
   return operationHandler;
 }
@@ -97,6 +102,8 @@ function singleParamConvenienceProcessor(operation, data){
 }
 
 function removeUnknownParams(operation, data){
+  if(!data || typeof data !== 'object') return data;
+
   var paramNames = {};
   operation.parameters.forEach(function(param){
     paramNames[param.name] = true;

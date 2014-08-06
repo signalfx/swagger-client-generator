@@ -57,12 +57,14 @@ function getApiName(apiObject){
   var path = apiObject.apiDeclaration.resourcePath || apiObject.path;
 
   // String non-word characters
-  path = path.replace(/\W/g, '');
+  path = path.replace(/\W/g, '/');
 
   // Turn paths which look/like/this to lookLikeThis
   path = path.replace(/(\w)\/(\w)/g, function(match, p1, p2){
     return p1 + p2.toUpperCase();
   });
+
+  path = path.replace(/\//g, '');
 
   return path;
 }
