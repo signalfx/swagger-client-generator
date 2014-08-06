@@ -9,22 +9,36 @@ function createOperationHandler(operation, requestHandler){
   return function(data, options){
     options = options || {};
 
-    data = singleParamConvenienceProcessor(operation, data);
+    var error,
+      url,
+      headers,
+      body;
 
-    var error = swaggerValidate.operation(data, operation, operation.apiObject.apiDeclaration.models);
-    if(error) throw error;
+    try{
+      data = singleParamConvenienceProcessor(operation, data);
 
-    data = removeUnknownParams(operation, data);
+      error = swaggerValidate.operation(data, operation, operation.apiObject.apiDeclaration.models);
+      
+      if(!error){
+        data = removeUnknownParams(operation, data);
+
+        url = getRequestUrl(operation, data);
+        headers = getRequestHeaders(operation, data, options);
+        body = getRequestBody(operation, data, options);
+      }
+    } catch(e){
+      error = e;
+    }
     
-    requestHandler({
+    requestHandler(error, {
       operation: operation,
       data: data,
       options: options,
 
       method: operation.method,
-      url: getRequestUrl(operation, data),
-      headers: getRequestHeaders(operation, data, options),
-      body: getRequestBody(operation, data, options)
+      url: url,
+      headers: headers,
+      body: body
     });
   };
 }
