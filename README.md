@@ -1,4 +1,5 @@
 # Swagger Client Generator
+[![Build Status](https://travis-ci.org/signalfuse/swagger-client-generator.svg?branch=master)](https://travis-ci.org/signalfuse/swagger-client-generator)
 
 This tool allows you to automatically generate an api object from a given
 swagger schema. Since this tool doesn't define how resource should be fetched,
