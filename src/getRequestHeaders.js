@@ -41,7 +41,7 @@ module.exports = function getRequestHeaders(operation, data, options){
   return headers;
 };
 
-function getContentType(operation, data, options){
+function getContentType(operation, data){
   var hasBody = operation.parameters.some(function(param){
     return param.paramType === 'body' && (param.name in data);
   });
