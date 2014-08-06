@@ -1,7 +1,7 @@
 'use strict';
 
 var getRequestUrl = require('./getRequestUrl');
-describe('get request url spec', function(){
+describe('get request url', function(){
   var basicOperation,
     complexOperation;
 

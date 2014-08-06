@@ -2,7 +2,7 @@
 
 var getRequestHeaders = require('./getRequestHeaders');
 
-describe('get request headers spec', function(){
+describe('get request headers', function(){
   var basicOperation,
     complexOperation;
 
@@ -59,7 +59,7 @@ describe('get request headers spec', function(){
           name: 'queryParam'
         },
         {
-          paramType: 'file',
+          paramType: 'form',
           type: 'File',
           name: 'theFile'
         }

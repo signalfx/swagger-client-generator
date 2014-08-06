@@ -7,7 +7,7 @@ module.exports = function getRequestBody(operation, data, headers){
 
   var contentType = headers['Content-Type'];
   var presentFormParams = operation.parameters.filter(function(param){
-    return param.paramType === 'form' && data[param.name] !== undefined;
+    return param.paramType === 'form' && data[param.name] != null;
   });
 
   if(contentType.indexOf('application/x-www-form-urlencoded') !== -1){
@@ -23,16 +23,32 @@ module.exports = function getRequestBody(operation, data, headers){
     body = presentFormParams.map(function(param){
       var key = param.name,
         value = data[key],
-        result = '--' + boundary + '\n';
+        result = '--' + boundary;
 
-      result += 'Content-Disposition: form-data; name="' + key + '"';
-      result += '\n\n';
-      result += value + '\n';
+      result += '\nContent-Disposition: form-data; name="' + key + '"';
+      
+      if(value.contentType){
+        if(value.name){
+          result += '; filename="' + value.name + '"';
+        }
+
+        result += '\nContent-Type: ' + value.contentType;
+      }
+
+      if(value.contentTransferEncoding){
+        result += '\nContent-Transfer-Encoding: ' + value.contentTransferEncoding;
+      }
+
+      if(value.body){
+        result += '\n\n' + value.body;
+      } else {
+        result += '\n\n' + value;
+      }
 
       return result;
-    }).join('');
+    }).join('\n');
 
-    body += '--' + boundary + '--\n';
+    body += '\n--' + boundary + '--\n';
     
     headers['Content-Type'] = contentType.replace(
       'multipart/form-data', 

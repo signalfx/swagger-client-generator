@@ -3,10 +3,20 @@
 var getRequestHeaders = require('./getRequestHeaders'),
   getRequestUrl = require('./getRequestUrl'),
   getRequestBody = require('./getRequestBody'),
+  errorTypes = require('./errorTypes'),
   swaggerValidate = require('../bower_components/swagger-validate/dist/swagger-validate');
 
+var allErrorTypes = {};
+Object.keys(swaggerValidate.errors).forEach(function(errorName){
+  allErrorTypes[errorName] = swaggerValidate.errors[errorName];
+});
+
+Object.keys(errorTypes).forEach(function(errorName){
+  allErrorTypes[errorName] = errorTypes[errorName];
+});
+
 function createOperationHandler(operation, requestHandler){
-  return function(data, options){
+  var operationHandler = function(data, options){
     var error,
       url,
       headers,
@@ -34,6 +44,7 @@ function createOperationHandler(operation, requestHandler){
       operation: operation,
       data: data,
       options: options,
+      errorTypes: allErrorTypes,
 
       method: operation.method,
       url: url,
@@ -41,6 +52,14 @@ function createOperationHandler(operation, requestHandler){
       body: body
     });
   };
+
+  operationHandler.operation = operation;
+  operationHandler.validate = function(data){
+    return swaggerValidate.operation(data, operation, operation.apiObject.apiDeclaration.models);
+  };
+  operationHandler.errorTypes = allErrorTypes;
+
+  return operationHandler;
 }
 module.exports = createOperationHandler;
 
