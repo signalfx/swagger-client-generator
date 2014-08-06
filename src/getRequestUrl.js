@@ -1,7 +1,7 @@
 'use strict';
 
 var errorTypes = require('./errorTypes'),
-  errorTypes.MissingPathParamsError;
+  MissingPathParamsError = errorTypes.MissingPathParamsError;
 
 module.exports = function getRequestUrl(operation, data){
   var url = getUrlTemplate(operation);
