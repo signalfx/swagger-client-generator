@@ -1,8 +1,8 @@
 'use strict';
 
-var ErrorTypes = require('./errorTypes'),
-  ContentTypeNotSupportedError = ErrorTypes.ContentTypeNotSupportedError,
-  AcceptsNotSupportedError = ErrorTypes.AcceptsNotSupportedError;
+var errorTypes = require('./errorTypes'),
+  ContentTypeNotSupportedError = errorTypes.ContentTypeNotSupportedError,
+  AcceptsNotSupportedError = errorTypes.AcceptsNotSupportedError;
 
 var DEFAULT_ACCEPT = 'application/json';
 module.exports = function getRequestHeaders(operation, data, options){
