@@ -11,10 +11,16 @@ module.exports = function getRequestHeaders(operation, data, options){
 
   var headers = {};
 
+  operation.parameters.forEach(function(param){
+    if(param.paramType === 'header' && data[param.name] != null){
+      headers[param.name] = data[param.name];
+    }
+  });
+
   // Passed headers
-  if(data.headers){
-    Object.keys(data.headers).forEach(function(key){
-      headers[key] = data.headers[key];
+  if(options.headers){
+    Object.keys(options.headers).forEach(function(key){
+      headers[key] = options.headers[key];
     });
   }
 
