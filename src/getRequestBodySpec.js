@@ -79,7 +79,7 @@ describe('get request body', function(){
 
   it('returns body as-is if the content type isn\'t a form content-type', function(){
     var result = getRequestBody(complexOperation, {
-      body: 'hello world'
+      theBody: 'hello world'
     }, {'Content-Type': 'text/plain'});
 
     expect(result).toEqual('hello world');
@@ -87,7 +87,7 @@ describe('get request body', function(){
 
   it('returns strigified body if the content type is application/json', function(){
     var result = getRequestBody(complexOperation, {
-      body: { hello: 'world' }
+      theBody: { hello: 'world' }
     }, {'Content-Type': 'application/json'});
 
     expect(result).toEqual('{"hello":"world"}');

@@ -1,7 +1,11 @@
 'use strict';
 
 module.exports = function getRequestBody(operation, data, headers){
-  var body = data.body;
+  var body = operation.parameters.filter(function(param){
+    return param.paramType === 'body' && data[param.name] != null;
+  }).map(function(param){
+    return data[param.name];
+  })[0];
 
   if(!(headers &&  headers['Content-Type'])) return body;
 
