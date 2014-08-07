@@ -25,7 +25,7 @@ describe('create operation handler', function(){
       parameters: [
         {
           paramType: 'query',
-          type: 'string',
+          type: 'number',
           name: 'queryParam'
         }
       ]
@@ -73,6 +73,11 @@ describe('create operation handler', function(){
           name: 'queryParam'
         },
         {
+          paramType: 'query',
+          type: 'number',
+          name: 'queryNumberParam'
+        },
+        {
           paramType: 'form',
           type: 'File',
           name: 'theFile'
@@ -91,10 +96,21 @@ describe('create operation handler', function(){
   it('converts passed value to it\'s corresponding param for one-param operations', function(){
     var operationHandler = createOperationHandler(basicOperation, requestHandler);
     
-    operationHandler('1');
+    operationHandler(1);
     
     expect(requestHandler).toHaveBeenCalledWith(undefined, jasmine.objectContaining(
-      {data: {queryParam: '1'}}
+      {data: {queryParam: 1}}
+    ));
+  });
+
+
+  it('converts passed value to it\'s corresponding param for one-param operations', function(){
+    var operationHandler = createOperationHandler(basicOperation, requestHandler);
+    
+    operationHandler(0);
+    
+    expect(requestHandler).toHaveBeenCalledWith(undefined, jasmine.objectContaining(
+      {data: {queryParam: 0}}
     ));
   });
 
@@ -102,10 +118,10 @@ describe('create operation handler', function(){
     'corresponds to a param name', function(){
     var operationHandler = createOperationHandler(basicOperation, requestHandler);
     
-    operationHandler({ queryParam: '1' });
+    operationHandler({ queryParam: 1 });
     
     expect(requestHandler).toHaveBeenCalledWith(undefined, jasmine.objectContaining(
-      {data: {queryParam: '1'}}
+      {data: {queryParam: 1}}
     ));
   });
 
@@ -113,7 +129,7 @@ describe('create operation handler', function(){
     var operationHandler = createOperationHandler(basicOperation, requestHandler);
     
     operationHandler({ 
-      queryParam: '1',
+      queryParam: 1,
       unkownParamName: 'turn down for what' 
     });
     
@@ -122,14 +138,14 @@ describe('create operation handler', function(){
     ));
 
     expect(requestHandler).toHaveBeenCalledWith(undefined, jasmine.objectContaining(
-      {data: {queryParam: '1'}}
+      {data: {queryParam: 1}}
     ));
   });
 
   it('provides error types for the operation handler as a property', function(){
     var operationHandler = createOperationHandler(basicOperation, requestHandler);
     
-    operationHandler({ queryParam: 1 });
+    operationHandler({ queryParam: '1' });
     expect(requestHandler).toHaveBeenCalledWith(
       jasmine.any(operationHandler.errorTypes.ValidationErrors), 
       jasmine.any(operationHandler.Request)

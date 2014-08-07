@@ -29,6 +29,8 @@ function createOperationHandler(operation, requestHandler){
       request;
     
     options = options || {};
+    
+    if(data == null) data = {};
 
     // if a function is passed in as options, assume it's a callback function
     // for convenience
@@ -84,8 +86,6 @@ createOperationHandler.logger = {
 
 // Enables data to be passed directly for single param operations.
 function singleParamConvenienceProcessor(operation, data){
-  if(!data) return data;
-
   // If there are more than one params, bail
   if(operation.parameters.length !== 1) return data;
 
