@@ -10,15 +10,32 @@
   <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
   <script src="swagger-client-generator.js"></script>
   <script>
+
     function requestHandler(error, request){
-      $.ajax(request.url, { type: request.method }).complete(request.options);
+      if(error) return console.error(error.toString());
+
+      var xhr = new XMLHttpRequest();
+      xhr.open(request.method, request.url)
+
+      if(request.headers){
+        Object.keys(request.headers).forEach(function(header){
+          xhr.setRequestHeader(header, request.headers[header]);
+        });
+      }
+
+      xhr.onloadend = function(){
+        request.options.callback(this.response);
+      };
+
+      xhr.send(request.body);
     }
+
 
     $.getJSON('./schema.json', function(schema){
       var api = swaggerClientGenerator(schema, requestHandler);
-
+      
       api.pet.getPetById(2, function(response){
-        console.log('response', response.responseJSON);
+        console.log(response);
       });
     });
   </script>

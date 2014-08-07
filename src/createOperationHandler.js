@@ -30,6 +30,12 @@ function createOperationHandler(operation, requestHandler){
     
     options = options || {};
 
+    // if a function is passed in as options, assume it's a callback function
+    // for convenience
+    if(typeof options === 'function'){
+      options.callback = options;
+    }
+
     try{
       data = singleParamConvenienceProcessor(operation, data);
       data = removeUnknownParams(operation, data);
