@@ -35,8 +35,5 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:signalfuse/swagger-client-generator.git"
-  },
-  "dependencies": {
-    "swagger-validate": "~0.1.1"
   }
 }

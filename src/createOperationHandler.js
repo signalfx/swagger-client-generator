@@ -4,7 +4,7 @@ var getRequestHeaders = require('./getRequestHeaders'),
   getRequestUrl = require('./getRequestUrl'),
   getRequestBody = require('./getRequestBody'),
   errorTypes = require('./errorTypes'),
-  swaggerValidate = require('../bower_components/swagger-validate/dist/swagger-validate');
+  swaggerValidate = require('swagger-validate');
 
 var allErrorTypes = {};
 Object.keys(swaggerValidate.errors).forEach(function(errorName){

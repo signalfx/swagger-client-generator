@@ -1,12 +1,6 @@
 module.exports = {
   files: [
-    'bower_components/swagger-validate/dist/swagger-validate.js',
-    'src/**/*.js'
-  ],
-
-  preprocessors: {
-    '**/{src,bower_components}/**/*.js': ['commonjs']
-  },
-
-  browsers: ['PhantomJS']
+    'src/**/*.js',
+    'node_modules/swagger-validate/src/*.js'
+  ]
 };

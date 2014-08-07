@@ -81,3 +81,19 @@ This object, which is found in either `request.operation` or `api.<resource>.<op
 * [API Declaration](https://github.com/wordnik/swagger-spec/blob/master/versions/1.2.md#52-api-declaration) - `operation.apiObject.apiDeclaration`
 * [Resource Object](https://github.com/wordnik/swagger-spec/blob/master/versions/1.2.md#512-resource-object) - `operation.apiObject.resourceObject`
 * [Resource Listing](https://github.com/wordnik/swagger-spec/blob/master/versions/1.2.md#51-resource-listing)- `operation.apiObject.resourceObject.resourceListing`
+
+## Developing
+After installing [nodejs](http://nodejs.org) execute the following:
+
+```shell
+git clone https://github.com/signalfuse/swagger-ajax-client.git
+cd swagger-ajax-client
+npm install
+npm run dev
+```
+The build engine will test and build everything, start a server hosting the `example` folder on [localhost:3000](http://localhost:3000), and watch for any changes and rebuild when nescessary.
+
+To generate minified files in `dist`:
+```shell
+npm run dist
+```
