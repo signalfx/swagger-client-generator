@@ -49,10 +49,10 @@ fetch-swagger-schema <url to a swagger api docs> <destination>
 * *requestHandler* - A function which accepts two parameters `error` and `request`. The error object will be a [ValidationErrors](https://github.com/signalfuse/swagger-validate#swaggervalidateerrorsvalidationerrors) object if an validation error occurs, otherwise it will be undefined. The request object is defined below.
 * *api* - An object which can be used as the api for the given schema. The first-level objects are the resources within the schema and the second-level functions are the operations which can be performed on those resources.
 
-#### `api.&lt;resource&gt;`
+#### `api.<resource>`
 A map of all the resources as defined in the schema to their operation handler (e.g. `api.pet`).
 
-#### `requestHandlerResponse = api.&lt;resource&gt;.&lt;operationHandler&gt;(data, options)`
+#### `requestHandlerResponse = api.<resource>.<operationHandler>(data, options)`
 This is the actual operation handler invoked by the clients (e.g., `api.pet.getPetById`).
 
 The operation handler takes two parameters:
