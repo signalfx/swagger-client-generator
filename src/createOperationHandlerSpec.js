@@ -113,7 +113,7 @@ describe('create operation handler', function(){
     var operationHandler = createOperationHandler(basicOperation, getAuthData, requestHandler);
     
     operationHandler(0);
-    
+    //console.log(requestHandler.calls.mostRecent());
     expect(requestHandler).toHaveBeenCalledWith(undefined, jasmine.objectContaining(
       {data: {queryParam: 0}}
     ));

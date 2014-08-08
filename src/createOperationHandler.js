@@ -90,9 +90,15 @@ createOperationHandler.logger = {
 // Enables data to be passed directly for single param operations.
 function singleParamConvenienceProcessor(operation, data){
   // If there are more than one params, bail
-  if(operation.parameters.length !== 1) return data;
+  var requiredParams = operation.parameters.filter(function(param){
+    return param.required;
+  });
 
-  var param = operation.parameters[0];
+  // If there are more than one required params, or if there is no required param
+  // and there are many optional params, bail
+  if(requiredParams.length > 1 || operation.parameters.length !== 1) return data;
+
+  var param = requiredParams[0] || operation.parameters[0];
   
   // If the param is already defined explicitly, bail
   if(typeof data === 'object' && (param.name in data)) return data;
@@ -100,15 +106,18 @@ function singleParamConvenienceProcessor(operation, data){
   var models = operation.apiObject.apiDeclaration.models;
 
   // If the data passed is is not valid for the param data type, bail
-  try {
-    swaggerValidate.dataType(data, param, models); 
+  var error = swaggerValidate.dataType(data, param, models); 
+
+  // If the data passed is a valid param data type, bail
+  if(!error){
     var wrapper = {};
     wrapper[param.name] = data;
     return wrapper;
-  } catch(e){
+  } else {
     return data;
   }
 }
+ 
 
 function removeUnknownParams(operation, data){
   if(!data || typeof data !== 'object') return data;
