@@ -3,54 +3,75 @@
 var createOperationHandler = require('./createOperationHandler');
 
 function createClient(schema, requestHandler){
-  var resources = processSchema(schema),
-    api = {},
+  var api = {},
     apiAuthData,
     authMethodName = 'auth';
 
+  schema = processSchema(schema);
+  
   // If the 'auth' key is used for any resource or operation, we'll use
   // 'authorization' instead for the auth methods
-  var authIsInUse = resources.some(function(resource){
-    var resourceApiName = getResourceApiName(resource);
-    if(resourceApiName === 'auth') return true;
-    return resource.operations.some(function(operation){
-      return operation.nickname === 'auth';
+  var authIsInUse = schema.apis.some(function(resourceObject){
+    return resourceObject.apiDeclaration.apis.some(function(apiObject){
+      var resourceApiName = getApiName(apiObject.apiDeclaration.resourcePath || apiObject.path);
+      if(resourceApiName === 'auth') return true;
+      return apiObject.operations.some(function(operation){
+        return operation.nickname === 'auth';
+      });
     });
   });
-
+  
   if(authIsInUse) authMethodName = 'authorization';
-
-  resources.forEach(function(resource){
-    var resourceApiName = getResourceApiName(resource),
-      resourceApi = api[resourceApiName] = {},
-      resourceAuthData;
-
-    resource.operations.forEach(function(operation){
-      var operationHandlerName = operation.nickname,
-        operationAuthData,
-        operationHandler; 
-      
-      function getAuthData(){
-        return operationAuthData || resourceAuthData || apiAuthData;
-      }
-
-      operationHandler = createOperationHandler(operation, getAuthData, requestHandler);
-
-      operationHandler[authMethodName] = function(){
-        operationAuthData = processApiAuthArgs(arguments);
-      };
-
-      resourceApi[operationHandlerName] = operationHandler;
-    });
-
-    resourceApi[authMethodName] = function(){
-      resourceAuthData = processApiAuthArgs(arguments);
-    };
-  });
 
   api[authMethodName] = function(){
     apiAuthData = processApiAuthArgs(arguments);
   };
+
+  schema.apis.forEach(function(resourceObject){
+    var resourceName,
+      resourceApi,
+      resourceAuthData;
+
+    if(resourceObject.apiDeclaration.resourcePath){
+      resourceName = getApiName(resourceObject.apiDeclaration.resourcePath);
+      resourceApi = api[resourceName] = {};
+      resourceApi[authMethodName] = function(){
+        resourceAuthData = processApiAuthArgs(arguments);
+      };
+    }
+
+    resourceObject.apiDeclaration.apis.forEach(function(apiObject){
+      var apiObjectName = resourceName,
+        apiObjectApi = resourceApi,
+        apiObjectAuthData;
+
+      if(!apiObjectName){
+        apiObjectName = getApiName(apiObject.path);
+        apiObjectApi = api[apiObjectName] = {};
+        apiObjectApi[authMethodName] = function(){
+          apiObjectAuthData = processApiAuthArgs(arguments);
+        };
+      }
+
+      apiObject.operations.forEach(function(operation){
+        var operationHandlerName = operation.nickname,
+          operationAuthData,
+          operationHandler; 
+        
+        function getAuthData(){
+          return operationAuthData || apiObjectAuthData || resourceAuthData || apiAuthData;
+        }
+
+        operationHandler = createOperationHandler(operation, getAuthData, requestHandler);
+
+        operationHandler[authMethodName] = function(){
+          operationAuthData = processApiAuthArgs(arguments);
+        };
+
+        apiObjectApi[operationHandlerName] = operationHandler;
+      });
+    });
+  });
 
   return api;
 }
@@ -71,16 +92,12 @@ function processApiAuthArgs(args){
 // Helpper method which assings back pointer to object parents and returns
 // the api objects within the given schema.
 function processSchema(schema){
-  var resources = [];
-  
   schema.apis.forEach(function(resourceObject){
     resourceObject.resourceListing = schema;
 
     resourceObject.apiDeclaration.apis.forEach(function(apiObject){
       apiObject.resourceObject = resourceObject;
       apiObject.apiDeclaration = resourceObject.apiDeclaration;
-      
-      resources.push(apiObject);
 
       apiObject.operations.forEach(function(operation){
         operation.apiObject = apiObject;
@@ -92,22 +109,20 @@ function processSchema(schema){
     });
   });
 
-  return resources;
+  return schema;
 }
 
 // Takes a path and returns a JavaScript-friendly variable name
-function getResourceApiName(apiObject){
-  var path = apiObject.apiDeclaration.resourcePath || apiObject.path;
-
+function getApiName(name){
   // String non-word characters
-  path = path.replace(/\W/g, '/');
+  name = name.replace(/\W/g, '/');
 
   // Turn paths which look/like/this to lookLikeThis
-  path = path.replace(/(\w)\/(\w)/g, function(match, p1, p2){
+  name = name.replace(/(\w)\/(\w)/g, function(match, p1, p2){
     return p1 + p2.toUpperCase();
   });
 
-  path = path.replace(/\//g, '');
+  name = name.replace(/\//g, '');
 
-  return path;
+  return name;
 }
