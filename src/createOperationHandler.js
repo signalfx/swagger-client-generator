@@ -96,7 +96,9 @@ function singleParamConvenienceProcessor(operation, data){
 
   // If there are more than one required params, or if there is no required param
   // and there are many optional params, bail
-  if(requiredParams.length > 1 || operation.parameters.length !== 1) return data;
+  if(requiredParams.length > 1) return data;
+
+  if(requiredParams.length !== 1 && operation.parameters.length !== 1) return data;
 
   var param = requiredParams[0] || operation.parameters[0];
   
