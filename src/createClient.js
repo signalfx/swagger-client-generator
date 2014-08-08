@@ -5,7 +5,20 @@ var createOperationHandler = require('./createOperationHandler');
 function createClient(schema, requestHandler){
   var resources = processSchema(schema),
     api = {},
-    apiAuthData;
+    apiAuthData,
+    authMethodName = 'auth';
+
+  // If the 'auth' key is used for any resource or operation, we'll use
+  // 'authorization' instead for the auth methods
+  var authIsInUse = resources.some(function(resource){
+    var resourceApiName = getResourceApiName(resource);
+    if(resourceApiName === 'auth') return true;
+    return resource.operations.some(function(operation){
+      return operation.nickname === 'auth';
+    });
+  });
+
+  if(authIsInUse) authMethodName = 'authorization';
 
   resources.forEach(function(resource){
     var resourceApiName = getResourceApiName(resource),
@@ -23,25 +36,21 @@ function createClient(schema, requestHandler){
 
       operationHandler = createOperationHandler(operation, getAuthData, requestHandler);
 
-      operationHandler.auth = function(){
+      operationHandler[authMethodName] = function(){
         operationAuthData = processApiAuthArgs(arguments);
       };
 
       resourceApi[operationHandlerName] = operationHandler;
     });
 
-    if(!resourceApi.auth){
-      resourceApi.auth = function(){
-        resourceAuthData = processApiAuthArgs(arguments);
-      };
-    }
+    resourceApi[authMethodName] = function(){
+      resourceAuthData = processApiAuthArgs(arguments);
+    };
   });
 
-  if(!api.auth) {
-    api.auth = function(){
-      apiAuthData = processApiAuthArgs(arguments);
-    };
-  }
+  api[authMethodName] = function(){
+    apiAuthData = processApiAuthArgs(arguments);
+  };
 
   return api;
 }

@@ -63,6 +63,14 @@ describe('create client', function(){
     }).not.toThrow();
   });
 
+  it('uses "authorize" instead of "auth" for the auth method name if the api already' +
+    'makes use of "auth" in the schema', function(){
+    schema.apis[0].apiDeclaration.resourcePath = '/auth';
+    var client = createClient(schema, requestHandler);
+    expect(client.auth).toBeDefined();
+    expect(client.authorization).toBeDefined();
+  });
+
   it('provides the most specific auth data passed in to it (resource-level)', function(){
     schema.apis[0].apiDeclaration.authorizations = {
       apiKey: {
