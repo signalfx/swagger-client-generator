@@ -6,9 +6,14 @@ describe('create operation handler', function(){
   var basicOperation,
     complexOperation,
     requestHandler,
-    promise;
+    promise,
+    authData,
+    getAuthData;
 
   beforeEach(function(){
+    authData = {};
+    getAuthData = jasmine.createSpy('getAuthData').and.returnValue(authData);
+
     promise = {
       then: jasmine.createSpy('promise.then')
     };
@@ -87,14 +92,14 @@ describe('create operation handler', function(){
   });
 
   it('returns the result of the request handler regardless of errors', function(){
-    var operationHandler = createOperationHandler(basicOperation, requestHandler);
+    var operationHandler = createOperationHandler(basicOperation, getAuthData, requestHandler);
     var result = operationHandler();
     expect(requestHandler).toHaveBeenCalled();
     expect(result).toBe(promise);
   });
 
   it('converts passed value to it\'s corresponding param for one-param operations', function(){
-    var operationHandler = createOperationHandler(basicOperation, requestHandler);
+    var operationHandler = createOperationHandler(basicOperation, getAuthData, requestHandler);
     
     operationHandler(1);
     
@@ -105,7 +110,7 @@ describe('create operation handler', function(){
 
 
   it('converts passed value to it\'s corresponding param for one-param operations', function(){
-    var operationHandler = createOperationHandler(basicOperation, requestHandler);
+    var operationHandler = createOperationHandler(basicOperation, getAuthData, requestHandler);
     
     operationHandler(0);
     
@@ -116,7 +121,7 @@ describe('create operation handler', function(){
 
   it('doesn\'t convert passed values if they are an object and a key in the object' +
     'corresponds to a param name', function(){
-    var operationHandler = createOperationHandler(basicOperation, requestHandler);
+    var operationHandler = createOperationHandler(basicOperation, getAuthData, requestHandler);
     
     operationHandler({ queryParam: 1 });
     
@@ -126,7 +131,7 @@ describe('create operation handler', function(){
   });
 
   it('prunes unknown params immediately', function(){
-    var operationHandler = createOperationHandler(basicOperation, requestHandler);
+    var operationHandler = createOperationHandler(basicOperation, getAuthData, requestHandler);
     
     operationHandler({ 
       queryParam: 1,
@@ -143,7 +148,7 @@ describe('create operation handler', function(){
   });
 
   it('provides error types for the operation handler as a property', function(){
-    var operationHandler = createOperationHandler(basicOperation, requestHandler);
+    var operationHandler = createOperationHandler(basicOperation, getAuthData, requestHandler);
     
     operationHandler({ queryParam: '1' });
     expect(requestHandler).toHaveBeenCalledWith(
@@ -153,27 +158,50 @@ describe('create operation handler', function(){
   });
 
   it('provides an operation data validator as a property', function(){
-    var operationHandler = createOperationHandler(basicOperation, requestHandler);
+    var operationHandler = createOperationHandler(basicOperation, getAuthData, requestHandler);
     expect(operationHandler.validate).toBeDefined();
   });
 
   it('provides the operation as a property', function(){
-    var operationHandler = createOperationHandler(basicOperation, requestHandler);
+    var operationHandler = createOperationHandler(basicOperation, getAuthData, requestHandler);
     expect(operationHandler.operation).toBe(basicOperation);
   });
 
   it('provides the possible error types for the operation as a property', function(){
-    var operationHandler = createOperationHandler(basicOperation, requestHandler);
+    var operationHandler = createOperationHandler(basicOperation, getAuthData, requestHandler);
     expect(operationHandler.errorTypes).toBeDefined();
   });
 
   it('provides the Request type for the operation as a property', function(){
-    var operationHandler = createOperationHandler(basicOperation, requestHandler);
+    var operationHandler = createOperationHandler(basicOperation, getAuthData, requestHandler);
     expect(operationHandler.Request).toBeDefined();
 
-    var otherOperationHandler = createOperationHandler(complexOperation, requestHandler);
+    var otherOperationHandler = createOperationHandler(complexOperation, getAuthData, requestHandler);
     expect(otherOperationHandler.Request).toBeDefined();
   
     expect(otherOperationHandler.Request).not.toBe(operationHandler.Request);
+  });
+
+  it('calls getAuthData to get the authorization data settings', function(){
+    var operationHandler = createOperationHandler(basicOperation, getAuthData, requestHandler);
+    operationHandler({ queryParam: 1 });
+    expect(getAuthData).toHaveBeenCalled();
+  });
+
+  it('returns missing auth exceptions when auth params are missing', function(){
+    basicOperation.apiObject.apiDeclaration.authorizations = {
+      apiKey: {
+        type: 'basicAuth',
+      }
+    };
+    
+    var getAuthData = function(){ return undefined; };
+    
+    var operationHandler = createOperationHandler(basicOperation, getAuthData, requestHandler);
+    operationHandler({ queryParam: 1 });
+    expect(requestHandler).toHaveBeenCalledWith(
+      jasmine.any(operationHandler.errorTypes.MissingAuthorizationError), 
+      jasmine.any(operationHandler.Request)
+    );
   });
 });

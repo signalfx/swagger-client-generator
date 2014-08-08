@@ -10,6 +10,17 @@ InvalidRequestError.prototype.constructor = InvalidRequestError;
 exports.InvalidRequestError = InvalidRequestError;
 
 
+function MissingAuthorizationError(authName, auth){
+  this.name = 'MissingAuthorizationError';
+  this.message = 'No data found for authorization: ' + authName;
+  this.authorization = auth;
+}
+MissingAuthorizationError.prototype = Object.create(InvalidRequestError.prototype);
+MissingAuthorizationError.prototype.constructor = MissingAuthorizationError;
+
+exports.MissingAuthorizationError = MissingAuthorizationError;
+
+
 function MissingPathParamsError(pathParams){
   this.name = 'MissingPathParamsError';
   this.message = 'Missing the following required path parameters: ' + pathParams.join('');

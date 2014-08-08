@@ -3,6 +3,7 @@
 var getRequestHeaders = require('./getRequestHeaders'),
   getRequestUrl = require('./getRequestUrl'),
   getRequestBody = require('./getRequestBody'),
+  applyAuthData = require('./applyAuthData'),
   errorTypes = require('./errorTypes'),
   swaggerValidate = require('swagger-validate');
 
@@ -15,7 +16,7 @@ Object.keys(errorTypes).forEach(function(errorName){
   allErrorTypes[errorName] = errorTypes[errorName];
 });
 
-function createOperationHandler(operation, requestHandler){
+function createOperationHandler(operation, getAuthData, requestHandler){
   function Request(data, options){
     this.method = operation.method;
     this.operation = operation;
@@ -52,6 +53,8 @@ function createOperationHandler(operation, requestHandler){
         request.url = getRequestUrl(operation, data);
         request.headers = getRequestHeaders(operation, data, options);
         request.body = getRequestBody(operation, data, request.headers);
+        
+        applyAuthData(operation, getAuthData(), request);
       }
     } catch(e){
       error = e;

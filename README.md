@@ -30,6 +30,10 @@ function requestHandler(error, request){
 // http://petstore.swagger.wordnik.com/api/api-docs 
 var api = swaggerClientGenerator(schema, requestHandler);
 
+// for apiKey authorization use: api.auth('my-token')
+// for basicAuth use: api.auth('username', 'password')
+// authorization may be set for any level (api, api.resource, or api.operation)
+
 api.pet.getPetById(2, function(response){
   console.log(response);
 });

@@ -3,32 +3,66 @@
 var createOperationHandler = require('./createOperationHandler');
 
 function createClient(schema, requestHandler){
-  var operations = processSchema(schema),
-    api = {};
+  var resources = processSchema(schema),
+    api = {},
+    apiAuthData;
 
-  function getApi(apiObject){
-    var name = getApiName(apiObject);
+  resources.forEach(function(resource){
+    var resourceApiName = getResourceApiName(resource),
+      resourceApi = api[resourceApiName] = {},
+      resourceAuthData;
 
-    if(!(name in api)) api[name] = {};
-    return api[name];
-  }
+    resource.operations.forEach(function(operation){
+      var operationHandlerName = operation.nickname,
+        operationAuthData,
+        operationHandler; 
+      
+      function getAuthData(){
+        return operationAuthData || resourceAuthData || apiAuthData;
+      }
 
-  operations.forEach(function(operation){
-    var api = getApi(operation.apiObject);
+      operationHandler = createOperationHandler(operation, getAuthData, requestHandler);
 
-    api[operation.nickname] = createOperationHandler(operation, requestHandler);
+      operationHandler.auth = function(){
+        operationAuthData = processApiAuthArgs(arguments);
+      };
+
+      resourceApi[operationHandlerName] = operationHandler;
+    });
+
+    if(!resourceApi.auth){
+      resourceApi.auth = function(){
+        resourceAuthData = processApiAuthArgs(arguments);
+      };
+    }
   });
+
+  if(!api.auth) {
+    api.auth = function(){
+      apiAuthData = processApiAuthArgs(arguments);
+    };
+  }
 
   return api;
 }
-
 module.exports = createClient;
-createClient.createOperationHandler = createOperationHandler;
+
+function processApiAuthArgs(args){
+  // for basic auth, allow calls with two args (username, password)
+  if(typeof args[0] === 'string' && typeof args[1] === 'string') {
+    return {
+      username: args[0],
+      password: args[1]
+    };
+  } else {
+    return args[0];
+  }
+}
 
 // Helpper method which assings back pointer to object parents and returns
 // the api objects within the given schema.
 function processSchema(schema){
-  var operations = [];
+  var resources = [];
   
   schema.apis.forEach(function(resourceObject){
     resourceObject.resourceListing = schema;
@@ -36,6 +70,8 @@ function processSchema(schema){
     resourceObject.apiDeclaration.apis.forEach(function(apiObject){
       apiObject.resourceObject = resourceObject;
       apiObject.apiDeclaration = resourceObject.apiDeclaration;
+      
+      resources.push(apiObject);
 
       apiObject.operations.forEach(function(operation){
         operation.apiObject = apiObject;
@@ -43,17 +79,15 @@ function processSchema(schema){
         operation.parameters.forEach(function(parameter){
           parameter.operation = operation;
         });
-
-        operations.push(operation);
       });
     });
   });
 
-  return operations;
+  return resources;
 }
 
 // Takes a path and returns a JavaScript-friendly variable name
-function getApiName(apiObject){
+function getResourceApiName(apiObject){
   var path = apiObject.apiDeclaration.resourcePath || apiObject.path;
 
   // String non-word characters
