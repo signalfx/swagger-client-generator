@@ -1,6 +1,6 @@
 {
   "name": "swagger-client-generator",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "Automatically generate an api object from a given swagger schema",
   "keywords": [
     "swagger",

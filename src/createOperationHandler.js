@@ -108,8 +108,14 @@ function singleParamConvenienceProcessor(operation, data){
   var models = operation.apiObject.apiDeclaration.models;
 
   // If the data passed is is not valid for the param data type, bail
-  var error = swaggerValidate.dataType(data, param, models); 
+  var error;
 
+  try {
+    error = swaggerValidate.dataType(data, param, models); 
+  } catch(e){
+    return data;
+  }
+  
   // If the data passed is a valid param data type, bail
   if(!error){
     var wrapper = {};
