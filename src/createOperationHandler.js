@@ -103,7 +103,7 @@ function singleParamConvenienceProcessor(operation, data){
   var param = requiredParams[0] || operation.parameters[0];
   
   // If the param is already defined explicitly, bail
-  if(typeof data === 'object' && (param.name in data)) return data;
+  if(typeof data === 'object' &&  data[param.name] !== undefined) return data;
 
   var models = operation.apiObject.apiDeclaration.models;
 

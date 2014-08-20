@@ -49,19 +49,19 @@ module.exports = function getRequestHeaders(operation, data, options){
 
 function getContentType(operation, data){
   var hasBody = operation.parameters.some(function(param){
-    return param.paramType === 'body' && (param.name in data);
+    return param.paramType === 'body' && data[param.name] !== undefined;
   });
 
   if (hasBody){
     return 'application/json';
   } else {
     var hasFormParams = operation.parameters.some(function(param){
-      return param.paramType === 'form' && (param.name in data);
+      return param.paramType === 'form' && data[param.name] !== undefined;
     });
 
     var hasFileParam = hasFormParams && 
       operation.parameters.some(function(param){
-        return param.type === 'File' && (param.name in data);
+        return param.type === 'File' && data[param.name] !== undefined;
       });
 
     if(hasFileParam) return 'multipart/form-data';
