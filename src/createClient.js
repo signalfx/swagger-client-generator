@@ -102,9 +102,11 @@ function processSchema(schema){
       apiObject.operations.forEach(function(operation){
         operation.apiObject = apiObject;
 
-        operation.parameters.forEach(function(parameter){
-          parameter.operation = operation;
-        });
+        if (operation.parameters) {
+          operation.parameters.forEach(function(parameter){
+            parameter.operation = operation;
+          });
+        }
       });
     });
   });
