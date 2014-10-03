@@ -1,6 +1,6 @@
 {
   "name": "swagger-client-generator",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "Automatically generate an api object from a given swagger schema",
   "keywords": [
     "swagger",
@@ -10,7 +10,7 @@
   "main": [
     "dist/swagger-client-generator.js"
   ],
-  "homepage": "https://github.com/signalfuse/swagger-client-generator",
+  "homepage": "https://github.com/signalfx/swagger-client-generator",
   "authors": [
     "Ozan Turgut <ozanturgut@gmail.com>"
   ],
@@ -34,6 +34,6 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git@github.com:signalfuse/swagger-client-generator.git"
+    "url": "git@github.com:signalfx/swagger-client-generator.git"
   }
 }
