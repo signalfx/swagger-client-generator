@@ -40,6 +40,7 @@ function createOperationHandler(operation, getAuthData, requestHandler){
     }
 
     try{
+      data = prune(data);
       data = singleParamConvenienceProcessor(operation, data);
       data = removeUnknownParams(operation, data);
 
@@ -86,6 +87,11 @@ createOperationHandler.logger = {
   warn: noop,
   error: noop
 };
+
+// Stringify and parse the data to clean up undefined, and non-scalar properties
+function prune(data){
+  return JSON.parse(JSON.stringify(data));
+}
 
 // Enables data to be passed directly for single param operations.
 function singleParamConvenienceProcessor(operation, data){
