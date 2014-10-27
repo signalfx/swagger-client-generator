@@ -29,18 +29,24 @@ module.exports = function applyAuthData(operation, authData, request){
       applyBasicAuth(auth, authName, authData.username, authData.password, request);
     }
   } else {
-    authNames.forEach(function(authName){
+    var hasAuth = authNames.some(function(authName){
       var auth = authMap[authName];
       var data = authData[authName];
 
-      if(!data) throw new MissingAuthorizationError(authName, auth);
+      if(!data) return false;
 
       if(auth.type === 'apiKey'){
         applyApiKey(auth, authName, data, request);
       } else if(auth.type === 'basicAuth'){
         applyBasicAuth(auth, authName, data.username, data.password, request);
       }
+
+      return true;
     });
+
+    if(!hasAuth){
+      throw new MissingAuthorizationError(authNames.join(', '), authMap);
+    }
   }
 };
 

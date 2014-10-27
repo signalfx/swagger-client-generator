@@ -95,6 +95,29 @@ describe('apply auth data', function(){
     }).toThrow();
   });
 
+  it('does not throw a missing auth error if only one of many auth methods present', function(){
+    var operation = {
+      apiObject: {
+        apiDeclaration: {
+          authorizations: {
+            apiKey: {
+              type: 'apiKey',
+              keyname: 'apiToken',
+              passAs: 'query'
+            },
+            basicAuth: {
+              type: 'basicAuth'
+            }
+          }
+        }
+      }
+    };
+
+    expect(function(){
+      applyAuthData(operation, {basicAuth: {username: 'Bob', password: 'secret' }}, request);
+    }).not.toThrow();
+  });
+
   it('can apply apikeys to headers', function(){
     var operation = {
       apiObject: {
