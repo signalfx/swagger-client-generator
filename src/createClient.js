@@ -24,6 +24,7 @@ function createClient(schema, requestHandler){
   if(authIsInUse) authMethodName = 'authorization';
 
   api[authMethodName] = function(){
+    if(arguments.length === 0) return apiAuthData;
     apiAuthData = processApiAuthArgs(arguments);
   };
 
@@ -36,6 +37,7 @@ function createClient(schema, requestHandler){
       resourceName = getApiName(resourceObject.apiDeclaration.resourcePath);
       resourceApi = api[resourceName] = {};
       resourceApi[authMethodName] = function(){
+        if(arguments.length === 0) return resourceAuthData;
         resourceAuthData = processApiAuthArgs(arguments);
       };
     }
@@ -49,6 +51,8 @@ function createClient(schema, requestHandler){
         apiObjectName = getApiName(apiObject.path);
         apiObjectApi = api[apiObjectName] = {};
         apiObjectApi[authMethodName] = function(){
+          if(arguments.length === 0) return apiObjectAuthData;
+
           apiObjectAuthData = processApiAuthArgs(arguments);
         };
       }
@@ -65,6 +69,8 @@ function createClient(schema, requestHandler){
         operationHandler = createOperationHandler(operation, getAuthData, requestHandler);
 
         operationHandler[authMethodName] = function(){
+          if(arguments.length === 0) return operationAuthData;
+
           operationAuthData = processApiAuthArgs(arguments);
         };
 
