@@ -14,7 +14,19 @@ module.exports = function getRequestUrl(operation, data){
     return param.paramType === 'query' && data[param.name] !== undefined;
   }).map(function(param){
     var key = param.name;
-    return encodeURIComponent(key) + '=' + encodeURIComponent(data[key]);
+    var encodedKey = encodeURIComponent(key);
+    var value = data[key];
+    
+    // For arrays, create multiple of the same query params to accomodate 
+    // the spec ambiguity on the issue: http://docs.oracle.com/javaee/6/api/
+    // javax/servlet/ServletRequest.html#getParameterValues(java.lang.String)
+    if(param.type === 'array' && Array.isArray(value)){
+      return value.map(function(item){
+        return encodedKey + '=' + encodeURIComponent(item);
+      }).join('&');
+    } else {
+      return encodedKey + '=' + encodeURIComponent(value);  
+    }
   }).join('&');
 
   if(queryParams) url += '?' + queryParams;

@@ -3,7 +3,8 @@
 var getRequestUrl = require('./getRequestUrl');
 describe('get request url', function(){
   var basicOperation,
-    complexOperation;
+    complexOperation,
+    arrayOperation;
 
   beforeEach(function(){
     basicOperation = {
@@ -18,6 +19,25 @@ describe('get request url', function(){
           paramType: 'query',
           type: 'string',
           name: 'what'
+        }
+      ]
+    };
+
+    arrayOperation = {
+      apiObject: {
+        apiDeclaration: {
+          basePath: 'http://example.com/api'
+        },
+        path: '/do/it'
+      },
+      parameters: [
+        {
+          paramType: 'query',
+          type: 'array',
+          name: 'listOfStuff',
+          items: {
+            type: 'string'
+          }
         }
       ]
     };
@@ -62,6 +82,11 @@ describe('get request url', function(){
   it('fills out path params from given data', function(){
     expect(getRequestUrl(complexOperation, {what: 'that'}))
       .toBe('http://example.com/api/do/that.json');
+  });
+
+  it('fills out query params from given array data', function(){
+    expect(getRequestUrl(arrayOperation, {listOfStuff: ['a', 'b', 'c']}))
+      .toBe('http://example.com/api/do/it?listOfStuff=a&listOfStuff=b&listOfStuff=c');
   });
 
   it('throws an error if a required path param is missing', function(){
