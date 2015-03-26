@@ -182,6 +182,18 @@ describe('create operation handler', function(){
     expect(otherOperationHandler.Request).not.toBe(operationHandler.Request);
   });
 
+  it('provides a method to just get the URL for an operation', function(){
+    var operationHandler = createOperationHandler(basicOperation, getAuthData, requestHandler);
+    expect(operationHandler.getUrl).toBeDefined();
+    var url = operationHandler.getUrl({queryParam: 1});
+    expect(url).toBe('http://example.com/api/do/it?queryParam=1');
+
+    // Invalid data causes an exception to be thrown
+    expect(function(){
+      operationHandler.getUrl({queryParam: '1'});
+    }).toThrow();
+  });
+
   it('calls getAuthData to get the authorization data settings', function(){
     var operationHandler = createOperationHandler(basicOperation, getAuthData, requestHandler);
     operationHandler({ queryParam: 1 });

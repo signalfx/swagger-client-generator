@@ -71,6 +71,18 @@ function createOperationHandler(operation, getAuthData, requestHandler){
   // Useful for reflection
   operationHandler.operation = operation;
   
+  operationHandler.getUrl = function(data){
+    data = prune(data);
+    data = singleParamConvenienceProcessor(operation, data);
+    data = removeUnknownParams(operation, data);
+
+    var error = swaggerValidate.operation(data, operation, operation.apiObject.apiDeclaration.models);
+    if(error) throw error;
+    
+    return getRequestUrl(operation, data);
+  };
+
+
   // Can be used to preemptively validate without action
   operationHandler.validate = function(data){
     return swaggerValidate.operation(data, operation, operation.apiObject.apiDeclaration.models);

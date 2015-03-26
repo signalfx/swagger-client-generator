@@ -65,6 +65,9 @@ The operation handler takes two parameters:
 
 The operation handler processes the data and options, passes the processed `request` data to the `requestHandler` and returns the result of the requestHandler back to the caller. The operation handler does not process the results of the requestHandler before returning it to the caller. 
 
+#### `url = api.<resource>.<operationHandler>.getUrl(data)`
+Intended for advanced use-cases. Returns the URL which would be called if the operation were to be called using this operation handler. The acceptable HTTP method to call this url can be found at `api.<resource>.<operationHandler>.operation.method`.
+
 #### `requestHandler(error, request)`
 The request handler is the second parameter for the swaggerClientGenerator and will be called whenever an operation is invoked. If there are any validation errors, the errors parameter be a [ValidationErrors](https://github.com/signalfx/swagger-validate#swaggervalidateerrorsvalidationerrors) object describing the validation errors in detail.
 
