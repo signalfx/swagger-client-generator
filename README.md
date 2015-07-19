@@ -27,7 +27,7 @@ function requestHandler(error, request){
 }
 
 // assumes that 'schema' already exists in scope and is the schema object for
-// http://petstore.swagger.wordnik.com/api/api-docs 
+// http://petstore.swagger.io/api/api-docs 
 var api = swaggerClientGenerator(schema, requestHandler);
 
 // for apiKey authorization use: api.auth('my-token')
