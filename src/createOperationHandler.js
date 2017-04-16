@@ -18,7 +18,7 @@ Object.keys(errorTypes).forEach(function(errorName){
 
 function createOperationHandler(operation, getAuthData, requestHandler){
   function Request(data, options){
-    this.method = operation.method;
+    this.method = operation.httpMethod;
     this.operation = operation;
     this.errorTypes = allErrorTypes;
     this.data = data;
